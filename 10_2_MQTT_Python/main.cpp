@@ -2,6 +2,7 @@
 #include "MQTTNetwork.h"
 #include "MQTTmbed.h"
 #include "MQTTClient.h"
+#include "stm32l475e_iot01_accelero.h"
 
 // GLOBAL VARIABLES
 WiFiInterface *wifi;
@@ -32,7 +33,9 @@ void publish_message(MQTT::Client<MQTTNetwork, Countdown>* client) {
     message_num++;
     MQTT::Message message;
     char buff[100];
-    sprintf(buff, "QoS0 Hello, Python! #%d", message_num);
+    int16_t pDataXYZ[3] = {0};
+    BSP_ACCELERO_AccGetXYZ(pDataXYZ);
+    printf(buff, "%d, %d, %d\n", pDataXYZ[0], pDataXYZ[1], pDataXYZ[2]);
     message.qos = MQTT::QOS0;
     message.retained = false;
     message.dup = false;
@@ -50,6 +53,7 @@ void close_mqtt() {
 
 int main() {
 
+    BSP_ACCELERO_Init();
     wifi = WiFiInterface::get_default_instance();
     if (!wifi) {
             printf("ERROR: No WiFiInterface found.\r\n");
