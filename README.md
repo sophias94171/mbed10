@@ -1,2 +1,4 @@
 # mbed10
-172.16.4.92
+ip address:
+
+![](Screenshot from 2021-05-01 22-48-00.png)
