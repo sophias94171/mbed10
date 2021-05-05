@@ -34,17 +34,22 @@ void publish_message(MQTT::Client<MQTTNetwork, Countdown>* client) {
     MQTT::Message message;
     char buff[100];
     int16_t pDataXYZ[3] = {0};
-    BSP_ACCELERO_AccGetXYZ(pDataXYZ);
-    sprintf(buff, "accelerometer data: %d, %d, %d\n", pDataXYZ[0], pDataXYZ[1], pDataXYZ[2]);
-    message.qos = MQTT::QOS0;
-    message.retained = false;
-    message.dup = false;
-    message.payload = (void*) buff;
-    message.payloadlen = strlen(buff) + 1;
-    int rc = client->publish(topic, message);
+    for(int i=0;i<100;i++){
+        BSP_ACCELERO_AccGetXYZ(pDataXYZ);
+        sprintf(buff, "accelerometer data: %d, %d, %d\n", pDataXYZ[0], pDataXYZ[1], pDataXYZ[2]);
+        message.qos = MQTT::QOS0;
+        message.retained = false;
+        message.dup = false;
+        message.payload = (void*) buff;
+        message.payloadlen = strlen(buff) + 1;
+        int rc = client->publish(topic, message);
 
-    printf("rc:  %d\r\n", rc);
-    printf("Puslish message: %s\r\n", buff);
+        printf("rc:  %d\r\n", rc);
+        printf("Puslish message: %s\r\n", buff);
+        ThisThread::sleep_for(500ms);
+
+
+    }
 }
 
 void close_mqtt() {
